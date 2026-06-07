@@ -13,8 +13,13 @@ export const googleProvider = new GoogleAuthProvider();
 export const loginWithGoogle = async () => {
   try {
     await signInWithPopup(auth, googleProvider);
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error logging in:", error);
+    if (error?.code === 'auth/unauthorized-domain') {
+       alert("Error: El dominio actual no está autorizado en Firebase para iniciar sesión. Debes agregarlo en Firebase Console > Authentication > Settings > Authorized domains.");
+    } else {
+       alert("Error al iniciar sesión: " + (error?.message || "Error desconocido o ventana cerrada."));
+    }
   }
 };
 
