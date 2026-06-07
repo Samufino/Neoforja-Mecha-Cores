@@ -269,35 +269,7 @@ export default function App() {
     }
   };
 
-  // Automatically reset user's developer test experience once upon request
-  useEffect(() => {
-    if (user && user.email === "samuel.metroid@gmail.com") {
-      const alreadyReset = localStorage.getItem("neoforja_tester_reset_exp_v5");
-      if (!alreadyReset) {
-        const userRef = doc(db, 'usuarios', user.uid);
-        updateDoc(userRef, {
-          ataques_hoy: 0,
-          ataques_totales: 0,
-          fecha_ataques: ""
-        }).then(async () => {
-          // Reset their owned chips' levels and exp to baseline
-          for (const chip of inventory) {
-            if (chip.owner_id === user.uid) {
-              const chipRef = doc(db, 'inventario_disponible', chip.id);
-              await updateDoc(chipRef, {
-                level: 1,
-                exp: 0,
-                ataques_recibidos: 0,
-                modificador_visual: ""
-              });
-            }
-          }
-          localStorage.setItem("neoforja_tester_reset_exp_v5", "true");
-          showSystemToast("¡Pruebas calibradas! Tu experiencia total, diaria y nivel de tus chips han sido reiniciadas a cero para comenzar la simulación de Senda de Aprendizaje.", "REINICIO DE PROGRESO DE PRUEBAS");
-        }).catch(err => console.error("Error automatic resetting requested test exp", err));
-      }
-    }
-  }, [user, inventory.length]);
+
 
   // Custom futuristic modal alert toast
   const [systemToast, setSystemToast] = useState<{ message: string; title: string } | null>(null);
