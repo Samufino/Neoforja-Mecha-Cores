@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "UserSaves": {
+      "title": "User Saves",
+      "description": "User general progress and active chip reference",
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "number",
+          "description": "Operator level, derived from their active roster"
+        },
+        "active_chip_uid": {
+          "type": "string",
+          "description": "The UID of the selected active chip in chips_autorizados"
+        },
+        "updatedAt": {
+          "type": "timestamp"
+        }
+      },
+      "required": ["level", "active_chip_uid", "updatedAt"]
+    },
+    "ChipsAutorizados": {
+      "title": "Chips Autorizados",
+      "description": "Individual licensed physical NFC chips with core stats",
+      "type": "object",
+      "properties": {
+        "chip_uid": {
+          "type": "string",
+          "description": "Unique key identifier matching the physical/emulated NFC UID"
+        },
+        "personaje": {
+          "type": "string",
+          "description": "The template character class name of this chip"
+        },
+        "variante_color": {
+          "type": "string",
+          "description": "Color code variant of the holographic projection"
+        },
+        "nivel": {
+          "type": "number",
+          "description": "Current holographic levels for this chip"
+        },
+        "propietario_id": {
+          "type": "string",
+          "description": "User UID who currently owns and registers this chip, or null if recycled"
+        },
+        "attacks": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Visual attacks learned by this chip"
+        },
+        "passive": {
+          "type": "string",
+          "description": "Passive passive ability of this chip template"
+        },
+        "updatedAt": {
+          "type": "timestamp"
+        }
+      },
+      "required": ["chip_uid", "personaje", "variante_color", "nivel", "propietario_id", "attacks", "passive", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "userSaves/{userId}": {
+      "schema": {
+        "$ref": "UserSaves"
+      },
+      "description": "General settings of a Neoforja Operator user."
+    },
+    "chips_autorizados/{chipId}": {
+      "schema": {
+        "$ref": "ChipsAutorizados"
+      },
+      "description": "NFC chips with dynamic blockchain ownership status in NeoForja."
+    }
+  }
+}

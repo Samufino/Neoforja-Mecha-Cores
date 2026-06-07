@@ -1,0 +1,8 @@
+{
+  "name": "Remix: NeoForja Digital Gachapon",
+  "description": "Terminal ciberpunk conectada al servidor para interfaz de personajes 3D de la NeoForja Digital.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

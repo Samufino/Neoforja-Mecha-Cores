@@ -1,0 +1,569 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  --neon-cian: #00f3ff;
+  --neon-orange: #ff8c00;
+  --dark-bg: #030712; /* Tailind's slate-950 */
+}
+
+body {
+  background-color: var(--dark-bg);
+  color: #f3f4f6;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* Beautiful Animated Interactive Neo-Mesh Backdrop */
+body::before {
+  content: "";
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  z-index: -2;
+  background-image: 
+    radial-gradient(circle at 30% 30%, rgba(6, 182, 212, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 70% 60%, rgba(217, 70, 239, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 50% 40%, rgba(245, 158, 11, 0.08) 0%, transparent 45%),
+    linear-gradient(to bottom, #030712, #070a13);
+  opacity: 1;
+  pointer-events: none;
+  animation: bgOrbit 45s ease-in-out infinite alternate;
+}
+
+/* Subtly floating digital grid lines for tech realism */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-image: 
+    linear-gradient(to right, rgba(6, 182, 212, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(6, 182, 212, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+@keyframes bgOrbit {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(5deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(-3deg) scale(1.05);
+  }
+}
+
+.glitch-text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #ffffff;
+  letter-spacing: 0.15em;
+  text-shadow: 0 0 15px rgba(0, 243, 255, 0.35);
+  background: linear-gradient(135deg, #ffffff 30%, var(--neon-cian) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Glassmorphic Cyber UI panel decoration */
+.ui-border {
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  background: rgba(8, 12, 24, 0.7);
+  box-shadow: 
+    0 10px 30px -10px rgba(0, 0, 0, 0.7),
+    0 0 20px rgba(0, 242, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Premium Rarity Border Glow Sets */
+@keyframes pulse-legend {
+  0%, 100% {
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.15), inset 0 0 10px rgba(245, 158, 11, 0.05);
+  }
+  50% {
+    border-color: rgba(245, 158, 11, 0.85);
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.5), inset 0 0 20px rgba(245, 158, 11, 0.15);
+  }
+}
+
+@keyframes pulse-epic {
+  0%, 100% {
+    border-color: rgba(217, 70, 239, 0.4);
+    box-shadow: 0 0 15px rgba(217, 70, 239, 0.15), inset 0 0 10px rgba(217, 70, 239, 0.05);
+  }
+  50% {
+    border-color: rgba(217, 70, 239, 0.85);
+    box-shadow: 0 0 30px rgba(217, 70, 239, 0.45), inset 0 0 20px rgba(217, 70, 239, 0.15);
+  }
+}
+
+@keyframes pulse-rare {
+  0%, 100% {
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.12), inset 0 0 8px rgba(59, 130, 246, 0.05);
+  }
+  50% {
+    border-color: rgba(59, 130, 246, 0.8);
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.4), inset 0 0 18px rgba(59, 130, 246, 0.1);
+  }
+}
+
+@keyframes pulse-common {
+  0%, 100% {
+    border-color: rgba(6, 182, 212, 0.3);
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.1), inset 0 0 6px rgba(6, 182, 212, 0.02);
+  }
+  50% {
+    border-color: rgba(6, 182, 212, 0.7);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.3), inset 0 0 12px rgba(6, 182, 212, 0.08);
+  }
+}
+
+.rarity-legendario {
+  background: linear-gradient(135deg, rgba(12, 10, 8, 0.95) 0%, rgba(20, 15, 10, 0.95) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  animation: pulse-legend 5s ease-in-out infinite;
+}
+
+.rarity-epico {
+  background: linear-gradient(135deg, rgba(10, 8, 12, 0.95) 0%, rgba(16, 10, 20, 0.95) 100%);
+  border: 1px solid rgba(217, 70, 239, 0.5);
+  animation: pulse-epic 5s ease-in-out infinite;
+}
+
+.rarity-raro {
+  background: linear-gradient(135deg, rgba(7, 10, 16, 0.95) 0%, rgba(10, 14, 24, 0.95) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.5);
+  animation: pulse-rare 5s ease-in-out infinite;
+}
+
+.rarity-comun {
+  background: linear-gradient(135deg, rgba(6, 10, 14, 0.95) 0%, rgba(8, 12, 18, 0.95) 100%);
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  animation: pulse-common 5s ease-in-out infinite;
+}
+
+/* 3D Premium Card Flip Logic */
+.perspective-1000 {
+  perspective: 1200px;
+}
+
+.flip-card {
+  perspective: 1200px;
+  position: relative;
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.flip-card-inner {
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-style: preserve-3d;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+}
+
+/* Set interactive layers depending on card flip state */
+.flip-card .flip-card-back {
+  pointer-events: none;
+}
+.flip-card.flipped .flip-card-back {
+  pointer-events: auto;
+}
+.flip-card .flip-card-front {
+  pointer-events: auto;
+}
+.flip-card.flipped .flip-card-front {
+  pointer-events: none;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
+/* Hover Reflection/Shine Reflex Layer */
+.flip-card-front::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 100%
+  );
+  transition: left 0.6s ease-in-out;
+  pointer-events: none;
+  transform: skewX(-20deg);
+}
+.flip-card-front:hover::after {
+  left: 150%;
+}
+
+/* Ultimate Heavy Screen Shudder / Impact effects */
+@keyframes shake-extreme {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(-3px, 2px) rotate(-1.5deg); }
+  20% { transform: translate(-4px, -1px) rotate(1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  45% { transform: translate(1px, -2px) rotate(-1deg); }
+  60% { transform: translate(-2px, 3px) rotate(1.5deg); }
+  75% { transform: translate(3px, 1px) rotate(-0.5deg); }
+  90% { transform: translate(-1px, -2px) rotate(0.5deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.shake-power-legendario {
+  animation: shake-extreme 0.5s ease-out;
+}
+
+@keyframes shake-medium {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-2px, 1.5px) rotate(-0.5deg); }
+  40% { transform: translate(2px, -1.5px) rotate(0.5deg); }
+  60% { transform: translate(-1.5px, -1px); }
+  80% { transform: translate(1.5px, 1px); }
+  100% { transform: translate(0, 0); }
+}
+
+.shake-power-epico {
+  animation: shake-medium 0.4s ease-out;
+}
+
+/* Custom visual attack animations on image based on character attacks */
+
+/* 1. LEGENDARY GOLD - AURUM Sparkle and Heavy Slam-out Beam */
+@keyframes visual-legendary-A {
+  0% { transform: translateY(0) scale(1); filter: brightness(1) drop-shadow(0 0 0 rgba(245,158,11,0)); }
+  20% { transform: translateY(-45px) rotate(-4deg) scale(1.15); filter: brightness(2.5) drop-shadow(0 0 40px #f59e0b); }
+  45% { transform: translateY(35px) rotate(6deg) scale(0.92); filter: brightness(3) drop-shadow(0 0 50px #fbbf24); }
+  75% { transform: translateY(-10px) scale(1.05); filter: brightness(1.5); }
+  100% { transform: translateY(0) scale(1); filter: brightness(1); }
+}
+.animate-aurum-impact {
+  animation: visual-legendary-A 0.65s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes visual-legendary-B {
+  0% { transform: scale(1); filter: contrast(1); }
+  30% { transform: scale(0.85) rotate(-15deg); filter: contrast(1.5) saturate(1.8) drop-shadow(0 0 10px #f59e0b); }
+  50% { transform: scale(1.28) rotate(15deg); filter: contrast(3) saturate(3) brightness(2.5) drop-shadow(0 0 60px #fb1111); }
+  100% { transform: scale(1) rotate(0); filter: contrast(1); }
+}
+.animate-aurum-singularity {
+  animation: visual-legendary-B 0.7s ease-in-out;
+}
+
+/* 2. EPIC PLASMA - CY-DRACO Eruption and Slash */
+@keyframes visual-epic-A {
+  0% { transform: translate(0) scale(1); }
+  15% { transform: translate(-30px, -20px) rotate(-15deg) scale(1.1); filter: brightness(2) drop-shadow(0 0 35px #d946ef); }
+  35% { transform: translate(45px, 30px) rotate(20deg) scale(1.22); filter: brightness(3.5) drop-shadow(0 0 50px #ff0077); }
+  100% { transform: translate(0) scale(1); }
+}
+.animate-draco-plasma {
+  animation: visual-epic-A 0.55s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+@keyframes visual-epic-B {
+  0% { transform: scale(1); }
+  40% { transform: scale(0.7) rotate(-45deg); filter: hue-rotate(90deg) brightness(0.5); }
+  55% { transform: scale(1.35) rotate(315deg); filter: hue-rotate(-60deg) brightness(2.5) drop-shadow(0 0 45px #ef4444); }
+  100% { transform: scale(1) rotate(360deg); }
+}
+.animate-draco-purga {
+  animation: visual-epic-B 0.65s ease-out;
+}
+
+/* 3. RARE MECHA-YUNQUE Tectonic Thrust */
+@keyframes visual-rare-yunque-A {
+  0% { transform: translateY(0); }
+  35% { transform: translateY(-35px) scaleY(1.3) scaleX(0.8); filter: brightness(1.8) drop-shadow(0 0 25px #3b82f6); }
+  50% { transform: translateY(20px) scaleY(0.7) scaleX(1.4); }
+  100% { transform: translateY(0); }
+}
+.animate-yunque-slam {
+  animation: visual-rare-yunque-A 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes visual-rare-yunque-B {
+  0% { transform: scale(1); }
+  25% { transform: scaleX(1.45) scaleY(0.6); }
+  50% { transform: scaleX(0.6) scaleY(1.45) translateY(-20px); filter: drop-shadow(0 0 30px #3b82f6); }
+  100% { transform: scale(1); }
+}
+.animate-yunque-shockwave {
+  animation: visual-rare-yunque-B 0.5s ease-out;
+}
+
+/* 4. RARE VOXEL Pixel Dissolve & Phantom Fade */
+@keyframes visual-rare-voxel-A {
+  0% { transform: translateX(0); opacity: 1; }
+  30% { transform: translateX(-65px) skewX(25deg); opacity: 0; filter: blur(5px) brightness(2); }
+  75% { transform: translateX(65px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; filter: none; }
+}
+.animate-voxel-fade {
+  animation: visual-rare-voxel-A 0.55s ease-in-out;
+}
+
+@keyframes visual-rare-voxel-B {
+  0% { transform: scale(1); clip-path: inset(0 0 0 0); }
+  25% { transform: scale(1.15) skewX(-15deg); filter: contrast(3) hue-rotate(90deg); clip-path: inset(10% 0 15% 0); }
+  50% { transform: scale(0.9) skewX(15deg); filter: brightness(2) saturate(2); clip-path: inset(50% 0 5% 0); }
+  100% { transform: scale(1); clip-path: inset(0 0 0 0); }
+}
+.animate-voxel-dissolve {
+  animation: visual-rare-voxel-B 0.45s ease-out;
+}
+
+/* 5. COMMON BYTE Shield & Silica blocks */
+@keyframes visual-common-byte-A {
+  0% { transform: scale(1); }
+  25% { transform: rotate(-5deg) scale(1.12); filter: drop-shadow(0 0 15px #06b2d2); }
+  50% { transform: rotate(5deg) scale(0.9); }
+  100% { transform: scale(1); }
+}
+.animate-byte-shatter {
+  animation: visual-common-byte-A 0.45s ease-in-out;
+}
+
+@keyframes visual-common-byte-B {
+  0% { transform: scale(1); }
+  40% { transform: scale(0.8); }
+  70% { transform: scale(1.22); filter: brightness(2) drop-shadow(0 0 25px #06b2d2); }
+  100% { transform: scale(1); }
+}
+.animate-byte-shell {
+  animation: visual-common-byte-B 0.45s ease-out;
+}
+
+/* 6. COMMON BIT Glitch and Teleport */
+@keyframes visual-common-bit-A {
+  0% { transform: translate(0); filter: hue-rotate(0deg); }
+  20% { transform: translate(-10px, 5px) skewX(10deg); filter: hue-rotate(180deg) brightness(2); }
+  40% { transform: translate(10px, -5px) skewX(-10deg); filter: hue-rotate(300deg); }
+  60% { transform: translate(-5px, -3px); }
+  100% { transform: translate(0); filter: none; }
+}
+.animate-bit-glitch {
+  animation: visual-common-bit-A 0.4s steps(4);
+}
+
+@keyframes visual-common-bit-B {
+  0% { transform: translate(0) scaleX(1); opacity: 1; }
+  25% { transform: translateX(-40px) scaleX(0.3); opacity: 0.1; }
+  50% { transform: translateX(60px) scaleX(1.8); opacity: 0.9; filter: saturate(3); }
+  100% { transform: translate(0) scaleX(1); opacity: 1; }
+}
+.animate-bit-teleport {
+  animation: visual-common-bit-B 0.45s ease-in-out;
+}
+
+/* Custom Scrollbars to match sci-fi design profile */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(3, 7, 18, 0.9);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(6, 182, 212, 0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(6, 182, 212, 0.6);
+}
+
+/* Overriding HTML5-QRCode Scanner layout text & buttons to keep them high contrast and visible */
+#reader, #reader * {
+  color: #0b0f17 !important;
+}
+
+#reader a {
+  color: #0284c7 !important;
+  text-decoration: underline !important;
+  font-weight: bold !important;
+}
+
+#reader button {
+  background-color: #0891b2 !important; /* cyan-600 */
+  color: #ffffff !important;
+  border: 1px solid #0e7490 !important;
+  padding: 8px 16px !important;
+  font-size: 11px !important;
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  margin: 6px auto !important;
+  display: inline-block !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+#reader button:hover {
+  background-color: #0e7490 !important;
+  box-shadow: 0 0 10px rgba(14, 116, 144, 0.4) !important;
+}
+
+#reader select {
+  background-color: #f3f4f6 !important;
+  border: 1px solid #cbd5e1 !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+  color: #0f172a !important;
+  font-family: sans-serif !important;
+  font-size: 12px !important;
+}
+
+/* Custom Cyberpunk Visual Modifiers (Unlocking rewards) */
+.mod-scanline {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 15;
+  box-shadow: inset 0 0 20px rgba(6, 182, 212, 0.25);
+  border: 1px solid rgba(6, 182, 212, 0.35) !important;
+  background: radial-gradient(circle at center, rgba(6, 182, 212, 0.02) 0%, rgba(0, 0, 0, 0.15) 100%);
+  overflow: hidden;
+}
+
+.mod-scanline::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: -100%; left: 0; right: 0; height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(6, 182, 212, 0.08) 80%,
+    rgba(6, 182, 212, 0.22) 98%,
+    transparent 100%
+  );
+  z-index: 15;
+  pointer-events: none;
+  animation: scanline-sweep 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes scanline-flicker {
+  0% { opacity: 0.95; }
+  50% { opacity: 1; }
+  100% { opacity: 0.95; }
+}
+
+@keyframes scanline-sweep {
+  0% { top: -100%; }
+  60%, 100% { top: 100%; }
+}
+
+.mod-helio {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 30px rgba(245, 158, 11, 0.85), inset 0 0 15px rgba(245, 158, 11, 0.4) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.mod-helio::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -70%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    rgba(251, 191, 36, 0) 0%,
+    rgba(251, 191, 36, 0.3) 25%,
+    rgba(253, 224, 71, 0.95) 50%,
+    rgba(251, 191, 36, 0.3) 75%,
+    rgba(251, 191, 36, 0) 100%
+  );
+  transform: rotate(25deg);
+  animation: helio-shimmer-sweep 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  z-index: 10;
+  pointer-events: none;
+}
+
+@keyframes helio-shimmer-sweep {
+  0% { left: -70%; }
+  25%, 100% { left: 150%; }
+}
+
+.mod-void {
+  border-color: #d946ef !important;
+  box-shadow: 0 0 15px #d946ef, 0 0 35px #a855f7, inset 0 0 15px rgba(217, 70, 239, 0.4) !important;
+  animation: void-anomaly-distortion 4s ease-in-out infinite alternate !important;
+}
+
+@keyframes void-anomaly-distortion {
+  0% {
+    box-shadow: 0 0 15px #d946ef, 0 0 30px #a855f7, inset 0 0 15px rgba(217, 70, 239, 0.4);
+    filter: hue-rotate(-20deg) contrast(1.1) brightness(1.05);
+  }
+  50% {
+    box-shadow: 0 0 25px #c084fc, 0 0 45px #6366f1, inset 0 0 25px rgba(168, 85, 247, 0.6);
+    filter: hue-rotate(15deg) contrast(1.2) brightness(0.95);
+  }
+  100% {
+    box-shadow: 0 0 35px #db2777, 0 0 55px #7c3aed, inset 0 0 35px rgba(219, 39, 119, 0.75);
+    filter: hue-rotate(50deg) contrast(1.3) brightness(1.1);
+  }
+}
+
+.mod-quantum {
+  border-color: #ff0077 !important;
+  box-shadow: 0 0 35px rgba(255, 0, 119, 0.95), inset 0 0 20px rgba(255, 0, 119, 0.4) !important;
+  animation: mod-quantum-flow 3s ease-in-out infinite !important;
+}
+
+@keyframes mod-quantum-flow {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(255, 0, 119, 0.7), inset 0 0 12px rgba(255, 0, 119, 0.3);
+    border-color: #ff0077 !important;
+    filter: saturate(1.2) hue-rotate(0deg);
+  }
+  50% {
+    box-shadow: 0 0 45px rgba(6, 182, 212, 0.95), inset 0 0 24px rgba(6, 182, 212, 0.5);
+    border-color: #06b6d4 !important;
+    filter: saturate(1.4) hue-rotate(180deg);
+  }
+}
+
+
