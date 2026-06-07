@@ -1695,6 +1695,17 @@ export default function App() {
                               </div>
                               <div className="flex items-center gap-2.5">
                                 <button 
+                                  onClick={() => {
+                                    setLastForgedChip({ id: c.id, character: c.personaje });
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                  }}
+                                  className="p-1 px-2 rounded border border-cyan-500/30 text-cyan-400 bg-cyan-950/10 hover:bg-cyan-500/20 text-[10px] uppercase font-bold flex items-center gap-1 cursor-pointer transition-all"
+                                  title="Mostrar enlace NFC en panel principal para reprogramar"
+                                >
+                                  <Link className="w-3 h-3" />
+                                  <span>Regenerar Link</span>
+                                </button>
+                                <button 
                                   onClick={() => copyNfcUrl(c.id)}
                                   className={`p-1 px-2 rounded border text-[10px] uppercase font-bold flex items-center gap-1 cursor-pointer transition-all ${
                                     copiedId === c.id 
