@@ -8,6 +8,19 @@ import { Html5QrcodeScanner } from 'html5-qrcode';
 import { motion, AnimatePresence } from 'motion/react';
 import { playClickSound, playAttackASound, playAttackBSound, playLevelUpSound, playErrorSound, playSyncSuccessSound, playRecycleSound, getCyberSynthMuted, setCyberSynthMuted } from './utils/cyberSynth';
 
+// @ts-ignore
+import aurumImg from './assets/AURUM_2-5D.png';
+// @ts-ignore
+import bitImg from './assets/BIT_2-5D.png';
+// @ts-ignore
+import byteImg from './assets/Byte_2-5D.png';
+// @ts-ignore
+import cyDragonImg from './assets/CY-Dragon_2-5D.png';
+// @ts-ignore
+import mechaYunqueImg from './assets/Mecha- Yunque_2-5D.png';
+// @ts-ignore
+import voxelImg from './assets/Voxel_2-5D.png';
+
 const CHAR_DATA: Record<string, any> = {
   "AURUM": { 
     type: "Legendario", 
@@ -15,7 +28,7 @@ const CHAR_DATA: Record<string, any> = {
     vel: 4, 
     en: 8, 
     passive: "Baluarte Áureo (-15% Daño Absorbido)", 
-    img: "/AURUM_2-5D.png", 
+    img: aurumImg, 
     desc: "Gobernador supremo blindado de las líneas defensivas de NeoForja.",
     attackA: { name: "MARTILLO DE LUZ IMPERIAL", anim: "aurum-impact" },
     attackB: { name: "SINGULARIDAD REFRACTARIA SOLAR", anim: "aurum-singularity" }
@@ -26,7 +39,7 @@ const CHAR_DATA: Record<string, any> = {
     vel: 9, 
     en: 4, 
     passive: "Red Efímera (+20% Detección Silente)", 
-    img: "/BIT_2-5D.png", 
+    img: bitImg, 
     desc: "Reconocimiento y desvío táctico veloz de baja latencia.",
     attackA: { name: "SOBRECARGA DE PORTAL COGNITIVO", anim: "bit-glitch" },
     attackB: { name: "BLITZ DE TELEPORTACIÓN DIGITAL", anim: "bit-teleport" }
@@ -37,7 +50,7 @@ const CHAR_DATA: Record<string, any> = {
     vel: 3, 
     en: 7, 
     passive: "Escudo de Silicio Sólido (Hormigón)", 
-    img: "/Byte_2-5D.png", 
+    img: byteImg, 
     desc: "Defensa maciza monolítica de resguardo estructural.",
     attackA: { name: "PROYECCIÓN DE BLOQUES DE SILICIO", anim: "byte-shatter" },
     attackB: { name: "CORTAFUEGOS CRIPTOGRÁFICO", anim: "byte-shell" }
@@ -48,7 +61,7 @@ const CHAR_DATA: Record<string, any> = {
     vel: 7, 
     en: 9, 
     passive: "Furia de Dragón (+20% Daño Crítico)", 
-    img: "/CY-Dragon_2-5D.png", 
+    img: cyDragonImg, 
     desc: "Aniquilador de élite cargado con celdas de combustible termonuclear.",
     attackA: { name: "PLASMA DE HYPER-FUSIÓN DRACÓNICA", anim: "draco-plasma" },
     attackB: { name: "PURGA TERMONUCLEAR DE PLASMA", anim: "draco-purga" }
@@ -59,7 +72,7 @@ const CHAR_DATA: Record<string, any> = {
     vel: 2, 
     en: 10, 
     passive: "Núcleo de Estabilización Magnética", 
-    img: "/Mecha- Yunque_2-5D.png", 
+    img: mechaYunqueImg, 
     desc: "Unidad autopropulsada de forja pesada y deformación tectónica.",
     attackA: { name: "MARTILLO DE PRESIÓN GRAVITACIONAL", anim: "yunque-slam" },
     attackB: { name: "ONDA DE CHOQUE DE REPERCUSIÓN", anim: "yunque-shockwave" }
@@ -70,7 +83,7 @@ const CHAR_DATA: Record<string, any> = {
     vel: 8, 
     en: 6, 
     passive: "Ocultamiento de Matriz de Sigilo Invasivo", 
-    img: "/Voxel_2-5D.png", 
+    img: voxelImg, 
     desc: "Maestro del hackeo invisible e interferencia de señales.",
     attackA: { name: "BARRIDO DE MATRIZ SIGILOSA", anim: "voxel-fade" },
     attackB: { name: "DESCORRELACIÓN DE PIXELES CUÁNTICOS", anim: "voxel-dissolve" }
@@ -1291,6 +1304,83 @@ export default function App() {
     );
   };
 
+  const RenderLockedCard = ({ charName }: { charName: string }) => {
+    const char = CHAR_DATA[charName];
+    if (!char) return null;
+    const config = getRarityConfig(char.type);
+
+    return (
+      <div className="w-full max-w-sm mx-auto h-[450px] perspective-1000 my-4 opacity-50 hover:opacity-100 transition-all duration-300">
+        <div className="w-full h-full border-2 border-dashed border-slate-700/50 bg-[#02050b]/80 flex flex-col p-4 relative overflow-hidden group rounded-lg">
+          {/* Cybernetic Corner Decorations */}
+          <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-slate-800"></span>
+          <span className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-slate-800"></span>
+          <span className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-slate-800"></span>
+          <span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-slate-800"></span>
+
+          <div className="flex justify-between items-center relative z-10 text-slate-500 font-mono text-[10px]">
+            <span>[ DESCONECTADO ]</span>
+            <span className="bg-slate-950/80 px-2 py-0.5 border border-slate-900 rounded-[3px] text-[9px] uppercase font-bold text-slate-500">
+              {char.type}
+            </span>
+          </div>
+
+          <h3 className="text-xl font-bold text-center mt-3 mb-1 text-slate-500 tracking-widest uppercase">
+            {charName}
+          </h3>
+          
+          <div className="text-[9px] font-mono font-bold text-slate-500/70 text-center uppercase tracking-wider mb-2">
+            CLASE: {char.class}
+          </div>
+
+          <div className="flex-grow flex flex-col items-center justify-center relative my-4">
+            <img 
+              src={char.img} 
+              alt={charName} 
+              className="h-44 object-contain select-none pointer-events-none transition-all duration-300 group-hover:scale-105" 
+              style={{
+                filter: 'brightness(0) drop-shadow(0 0 4px rgba(6,182,212,0.2)) opacity(0.12) grayscale(100%)'
+              }}
+              referrerPolicy="no-referrer"
+            />
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 z-20">
+              <span className="text-sm font-display font-bold text-red-500/80 border border-red-500/20 bg-red-950/70 backdrop-blur-sm px-3 py-1 rounded shadow-lg flex items-center gap-1">
+                🔒 BLOQUEADO
+              </span>
+              <span className="text-[9px] font-mono text-slate-400 max-w-[170px] text-center leading-normal">
+                Escanear un dispositivo o ingresar el UID para vincular.
+              </span>
+            </div>
+          </div>
+
+          <div className="space-y-1.5 font-mono text-[10px] text-slate-400 mt-2 p-2.5 bg-black/40 rounded border border-slate-900/30">
+            <div className="text-slate-500 font-bold uppercase tracking-wide text-[8.5px] mb-1">PROGRAMACIÓN DE BASE:</div>
+            <div className="flex justify-between">
+              <span>VELOCIDAD:</span>
+              <span>{char.vel} / 10</span>
+            </div>
+            <div className="flex justify-between">
+              <span>ENERGÍA:</span>
+              <span>{char.en} / 10</span>
+            </div>
+            <p className="text-[8px] text-slate-500/80 leading-snug mt-1 border-t border-slate-900/40 pt-1">
+              HABILIDAD PASIVA: {char.passive}
+            </p>
+          </div>
+
+          <button 
+            onClick={() => {
+              setShowClaimModal(true);
+            }}
+            className="mt-3 w-full border border-dashed border-cyan-500/30 hover:border-cyan-400 bg-cyan-950/20 hover:bg-cyan-950/45 text-cyan-400 text-xs font-mono font-bold py-2 rounded transition-all cursor-pointer text-center"
+          >
+            ➕ VINCULAR CHIP {charName}
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   const fusionarChips = async (parentChipId: string, childChipId: string) => {
     if (!user) return;
     triggerVibration();
@@ -1897,162 +1987,56 @@ export default function App() {
               </div>
             </div>
 
-            {/* ÁLBUM DIGITAL / COLECCIÓN DE NEOCAMPONES */}
+            {/* ÁLBUM DIGITAL / COLECCIÓN DE NEOCAMPONES - MERGED INTO ACTIVE SQUAD INVENTORY */}
             {(() => {
               const unlockedCharactersCount = Object.keys(CHAR_DATA).filter(charName => 
                 inventory.some(chip => chip.personaje === charName)
               ).length;
               return (
-                <div className="mb-10 p-6 md:p-8 bg-gradient-to-b from-slate-900/40 via-black/85 to-black border-2 border-cyan-500/20 rounded-xl shadow-[0_0_30px_rgba(6,182,212,0.05)] relative overflow-hidden">
-                  {/* Cyber grid lines background effect */}
-                  <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(6,182,212,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(6,182,212,0.015)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
-                  <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />
-
+                <div className="mb-10">
+                  {/* Portfolio/Album Info Header Banner */}
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 pb-5 border-b border-cyan-500/10 relative z-10">
                     <div>
                       <h3 className="text-cyan-400 font-display tracking-[0.25em] text-sm md:text-base font-black uppercase flex items-center gap-2">
-                        <ScanLine className="text-cyan-400 animate-pulse w-5 h-5" /> ÁLBUM DE COLECCIÓN DIGITAL
+                        <ScanLine className="text-cyan-400 animate-pulse w-5 h-5" /> ÁLBUM DE COLECCIÓN Y ESCUADRÓN ACTIVO
                       </h3>
                       <p className="text-[11px] text-white/50 font-mono mt-1.5 max-w-2xl leading-relaxed">
-                        Desbloquea los seis neocampones de combate de la central física de NeoForja. Registrar un nuevo personaje por primera vez activa la <span className="text-amber-400 font-bold uppercase tracking-wider animate-pulse font-mono">+15 EXP Sinergia de Álbum</span>, potenciando simultáneamente a todo tu escuadrón.
+                        Gestiona tus fichas físicas y monitorea tu progreso. Registrar nuevos personajes activa la <span className="text-amber-400 font-bold uppercase tracking-wider animate-pulse font-mono">+15 EXP Sinergia de Álbum</span>, potenciando simultáneamente a todo tu escuadrón.
                       </p>
                     </div>
-                    <div className="bg-cyan-950/40 border-2 border-cyan-500/40 px-4 py-2 rounded-lg font-mono text-xs flex items-center justify-between gap-4 self-stretch md:self-auto shadow-[0_0_15px_rgba(6,182,212,0.12)]">
-                      <span className="text-cyan-400 font-bold uppercase tracking-wider text-[10px]">COLECCIÓN COMPLETA:</span>
-                      <span className="text-amber-400 font-black text-sm">{unlockedCharactersCount} / 6 REGISTRADOS</span>
+                    <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                      <div className="bg-cyan-950/40 border-2 border-cyan-500/40 px-4 py-2 rounded-lg font-mono text-xs flex items-center justify-between gap-4 shadow-[0_0_15px_rgba(6,182,212,0.12)]">
+                        <span className="text-cyan-400 font-bold uppercase tracking-wider text-[10px]">COLECCIÓN COMPLETA:</span>
+                        <span className="text-amber-400 font-black text-sm">{unlockedCharactersCount} / 6 REGISTRADOS</span>
+                      </div>
+                      {inventory.length === 0 && (
+                        <button onClick={assignRandomChip} className="border-2 border-green-500 text-green-400 bg-green-500/10 px-4 py-2 font-mono text-xs font-bold hover:bg-green-500/20 rounded shadow-[0_0_15px_rgba(34,197,94,0.1)] transition-colors cursor-pointer">
+                          OBTENER CHIP DE INICIO
+                        </button>
+                      )}
                     </div>
                   </div>
 
-                  {/* Grid of 6 Album Stickers - Highly visible, spacious grid column spacing */}
-                  <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6 relative z-10">
+                  {/* Main Grid: Fully rendered large cards for both unlocked inventory chips and locked missing characters */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {Object.keys(CHAR_DATA).map(charName => {
-                      const char = CHAR_DATA[charName];
                       const matchingChips = inventory.filter(chip => chip.personaje === charName);
                       const isUnlocked = matchingChips.length > 0;
-                      const config = getRarityConfig(char.type);
                       
-                      const ownedCount = matchingChips.length;
-                      const highestLevel = isUnlocked ? Math.max(...matchingChips.map(c => c.level || 1)) : 1;
-                      
-                      return (
-                        <div 
-                          key={`album-char-${charName}`}
-                          className={`relative backdrop-blur-md rounded-xl p-5 border-2 transition-all duration-300 flex flex-col items-center justify-between text-center group ${
-                            isUnlocked 
-                              ? `bg-black/65 border-cyan-500/25 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.2)]` 
-                              : `bg-slate-950/30 border-slate-900/60 opacity-60 hover:opacity-100 hover:border-cyan-500/30`
-                          }`}
-                        >
-                          {/* Inner scanner line effect for aesthetics */}
-                          {isUnlocked && (
-                            <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-500/35 to-transparent animate-[scanline_3s_ease-in-out_infinite] pointer-events-none" />
-                          )}
-
-                          {/* Cybernetic Corner Indicators */}
-                          <div className={`absolute top-1 left-1 w-2 h-2 border-t-2 border-l-2 ${isUnlocked ? 'border-cyan-400/50' : 'border-slate-800'} opacity-60`} />
-                          <div className={`absolute top-1 right-1 w-2 h-2 border-t-2 border-r-2 ${isUnlocked ? 'border-cyan-400/50' : 'border-slate-800'} opacity-60`} />
-                          <div className={`absolute bottom-1 left-1 w-2 h-2 border-b-2 border-l-2 ${isUnlocked ? 'border-cyan-400/50' : 'border-slate-800'} opacity-60`} />
-                          <div className={`absolute bottom-1 right-1 w-2 h-2 border-b-2 border-r-2 ${isUnlocked ? 'border-cyan-400/50' : 'border-slate-800'} opacity-60`} />
-
-                          {/* Card Illustration Wrapper - 2.5x times larger for extreme clarity */}
-                          <div className={`relative w-28 h-28 sm:w-32 sm:h-32 mb-4 flex items-center justify-center p-2 rounded-lg bg-black/45 border ${isUnlocked ? 'border-cyan-500/10' : 'border-slate-900/80'} overflow-hidden`}>
-                            {isUnlocked ? (
-                              <>
-                                <img 
-                                  src={char.img} 
-                                  alt={charName} 
-                                  className="h-full w-full object-contain filter drop-shadow-[0_0_8px_rgba(6,182,212,0.35)] transition-transform duration-500 group-hover:scale-115" 
-                                  referrerPolicy="no-referrer"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                              </>
-                            ) : (
-                              <>
-                                <img 
-                                  src={char.img} 
-                                  alt={charName} 
-                                  className="h-full w-full object-contain select-none pointer-events-none transition-transform duration-500 group-hover:scale-105" 
-                                  style={{
-                                    filter: 'brightness(0) drop-shadow(0 0 5px rgba(6,182,212,0.25)) opacity(0.2) grayscale(100%)'
-                                  }}
-                                  referrerPolicy="no-referrer"
-                                />
-                                <div className="absolute inset-x-0 bottom-2 flex justify-center z-10">
-                                  <span className="text-[8px] font-mono text-red-400/90 border border-red-500/30 bg-red-950/90 px-1.5 py-0.5 rounded leading-none flex items-center gap-0.5 font-bold tracking-tight">
-                                    🔒 BLOQUEADO
-                                  </span>
-                                </div>
-                              </>
-                            )}
-                          </div>
-
-                          {/* Text labels and attributes */}
-                          <div className="w-full flex flex-col items-center">
-                            <span className={`text-xs font-display font-black uppercase tracking-widest ${isUnlocked ? config.textClass : 'text-slate-500'}`}>
-                              {charName}
-                            </span>
-                            <span className="text-[8px] font-mono font-bold text-white/30 uppercase mt-0.5 tracking-wider">
-                              CLASE: {char.class}
-                            </span>
-                          </div>
-
-                          {/* Unlock status with details, passive descriptions or scanning directions */}
-                          <div className="w-full mt-3 pt-2.5 border-t border-cyan-500/15 flex flex-col items-center justify-center min-h-[36px]">
-                            {isUnlocked ? (
-                              <div className="flex flex-col items-center gap-1 leading-none">
-                                <div className="flex items-center gap-1.5">
-                                  <span className="text-[8.5px] font-black font-mono text-cyan-300 bg-cyan-950/50 border border-cyan-500/20 px-2 py-0.5 rounded uppercase leading-none">
-                                    X{ownedCount} PROPIOS
-                                  </span>
-                                  <span className="text-[8.5px] font-mono text-amber-500 font-extrabold leading-none">
-                                    LVL {highestLevel}
-                                  </span>
-                                </div>
-                                <span className="text-[8px] font-mono text-white/40 mt-1 max-w-[120px] truncate leading-none" title={char.passive}>
-                                  {char.passive}
-                                </span>
-                              </div>
-                            ) : (
-                              <div className="flex flex-col items-center gap-1 leading-none">
-                                <span className="text-[8px] font-bold font-mono text-slate-500 uppercase tracking-wider">
-                                  DESVINCULADO
-                                </span>
-                                <span className="text-[7px] font-mono text-cyan-500/40 uppercase max-w-[110px] leading-snug select-none">
-                                  ESCANEA QR DE CHIP
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      );
+                      if (isUnlocked) {
+                        return matchingChips.map(chip => (
+                          <RenderCard key={`card-${chip.id}`} chip={chip} />
+                        ));
+                      } else {
+                        return (
+                          <RenderLockedCard key={`locked-char-${charName}`} charName={charName} />
+                        );
+                      }
                     })}
                   </div>
                 </div>
               );
             })()}
-
-            {/* USER INVENTORY */}
-            <div className="flex justify-between items-end mb-6 border-b border-cyan-800 pb-2">
-              <h2 className="glitch-text text-xl md:text-2xl tracking-widest text-cyan-400">TUS CHIPS</h2>
-              {inventory.length === 0 && (
-                <button onClick={assignRandomChip} className="border border-green-500 text-green-400 bg-green-500/10 px-3 py-1 text-xs font-mono font-bold hover:bg-green-500/20">
-                  OBTENER CHIP DE INICIO
-                </button>
-              )}
-            </div>
-            
-            {inventory.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {inventory.map(chip => (
-                  <RenderCard key={`card-${chip.id}`} chip={chip} />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-20 text-cyan-900 font-mono text-sm border border-dashed border-cyan-900 bg-cyan-950/10">
-                NO HAY CHIPS ASIGNADOS A ESTA SEÑAL DE IDENTIDAD.
-              </div>
-            )}
           </>
         )}
       </main>
