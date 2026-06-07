@@ -188,7 +188,7 @@ export default function App() {
 
   // New states for Claiming Chips & Admin controls
   const [showClaimModal, setShowClaimModal] = useState(false);
-  const [manualUid, setManualUid] = useState("");
+  const [tabSyncedElsewhere, setTabSyncedElsewhere] = useState(false);
   const [nfcReading, setNfcReading] = useState(false);
   const [nfcError, setNfcError] = useState("");
   const [nfcSuccessMsg, setNfcSuccessMsg] = useState("");
@@ -382,7 +382,7 @@ export default function App() {
     };
   }, []);
 
-  // Captura del UID de la URL (Deep Link) para sincronización automática
+  // Captura del UID de la URL (Deep Link) para sincronización automática y sincronización de pestañas secundarias
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const uidFromUrl = params.get("uid");
@@ -391,12 +391,79 @@ export default function App() {
       localStorage.setItem("pending_uid", cleanUid);
       console.log(`Deep Link detectado. UID pendiente almacenado: ${cleanUid}`);
       
+      // Intentamos sincronizar con otra pestaña activa para no abrir ventanas duplicadas
+      try {
+        const channel = new BroadcastChannel('neoforja_nfc_sync');
+        channel.postMessage({ type: 'NFC_SCANNED', uid: cleanUid });
+        
+        let ackReceived = false;
+        const handleAck = (event: MessageEvent) => {
+          if (event.data && event.data.type === 'NFC_ACK' && event.data.uid === cleanUid) {
+            ackReceived = true;
+            console.log("¡Otra pestaña activa confirmó la recepción del chip!");
+            setTabSyncedElsewhere(true);
+            localStorage.removeItem("pending_uid");
+          }
+        };
+        channel.addEventListener('message', handleAck);
+        
+        setTimeout(() => {
+          if (ackReceived) {
+            try {
+              window.close();
+            } catch (e) {
+              console.log("No se pudo cerrar la pestaña automáticamente por seguridad del navegador.", e);
+            }
+          }
+          channel.close();
+        }, 1000);
+      } catch (err) {
+        console.error("BroadcastChannel error:", err);
+      }
+
       // Limpiamos el parámetro de la URL para evitar reclamaciones duplicadas por recarga accidental
       const url = new URL(window.location.href);
       url.searchParams.delete("uid");
       window.history.replaceState({}, document.title, url.toString());
     }
   }, []);
+
+  // Escucha de BroadcastChannel para la pestaña principal (receptora)
+  useEffect(() => {
+    try {
+      const channel = new BroadcastChannel('neoforja_nfc_sync');
+      const handleIncomingScan = async (event: MessageEvent) => {
+        if (event.data && event.data.type === 'NFC_SCANNED') {
+          const scannedUid = event.data.uid;
+          console.log(`[BROADCAST] Recibido NFC_SCANNED para Chip ID: ${scannedUid}`);
+          
+          // Enviamos acuse de recibo de inmediato para la pestaña secundaria
+          channel.postMessage({ type: 'NFC_ACK', uid: scannedUid });
+          
+          if (user) {
+            showSystemToast(`Procesando vinculación remota del chip ${scannedUid}...`, "SINCRONIZACIÓN DE RED");
+            const success = await claimPhysicalChip(scannedUid);
+            if (success) {
+              if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]);
+              }
+            }
+          } else {
+            localStorage.setItem("pending_uid", scannedUid);
+            showSystemToast(`Se detectó un escaneo de Chip (${scannedUid}). Inicia sesión en esta pestaña principal para vincularlo a tu firma digital.`, "SESIÓN PRINCIPAL REQUERIDA");
+          }
+        }
+      };
+      
+      channel.addEventListener('message', handleIncomingScan);
+      return () => {
+        channel.removeEventListener('message', handleIncomingScan);
+        channel.close();
+      };
+    } catch (e) {
+      console.error("Error setting up BroadcastChannel listener:", e);
+    }
+  }, [user, inventory]);
 
   // Procesamiento del UID de sincronización pendiente al iniciar sesión con Google
   useEffect(() => {
@@ -637,13 +704,34 @@ export default function App() {
     triggerVibration();
     handleEnterFullscreen();
     try {
-      const chipRef = doc(db, 'inventario_disponible', cleanId);
-      const chipSnap = await getDoc(chipRef);
+      let chipRef = doc(db, 'inventario_disponible', cleanId);
+      let chipSnap = await getDoc(chipRef);
+      let matchedId = cleanId;
+
+      if (!chipSnap.exists()) {
+        // Fallback 1: probar en mayúsculas (muy común en hardware de grabación)
+        const upperId = cleanId.toUpperCase();
+        chipRef = doc(db, 'inventario_disponible', upperId);
+        chipSnap = await getDoc(chipRef);
+        if (chipSnap.exists()) {
+          matchedId = upperId;
+        } else {
+          // Fallback 2: probar en minúsculas (formato clásico de lectura de teléfonos de antena)
+          const lowerId = cleanId.toLowerCase();
+          chipRef = doc(db, 'inventario_disponible', lowerId);
+          chipSnap = await getDoc(chipRef);
+          if (chipSnap.exists()) {
+            matchedId = lowerId;
+          }
+        }
+      }
+
       if (!chipSnap.exists()) {
         playErrorSound();
-        showSystemToast(`FALLO DE ENLACE: La serie "${cleanId}" no existe en el sistema. Asegúrate de que el administrador lo haya registrado en el sistema primero.`, "ERROR DE ENLACE DE RED");
+        showSystemToast(`FALLO DE ENLACE: La serie "${cleanId}" no existe en el sistema o no está registrada por el administrador en NeoForja.`, "ERROR DE ENLACE DE RED");
         return false;
       }
+
       const data = chipSnap.data();
       if (data.owner_id) {
         if (data.owner_id === user.uid) {
@@ -654,7 +742,7 @@ export default function App() {
           if (isAdmin) {
              const confirmRecycle = window.confirm(`OPERACIÓN ADMIN: Este chip (${data.personaje}) pertenece a otro usuario. ¿Deseas RECICLARLO / Liberarlo?`);
              if (confirmRecycle) {
-               await adminRecyclePhysicalChip(cleanId);
+               await adminRecyclePhysicalChip(matchedId);
                return true;
              }
              return false;
@@ -665,12 +753,12 @@ export default function App() {
         }
       }
 
-      // Link ownership
+      // Link ownership using exact matched document path
       await updateDoc(chipRef, { owner_id: user.uid });
       playSyncSuccessSound();
-      showSystemToast(`¡Sincronización Completada! ${data.personaje} (# ${cleanId}) ahora pertenece a tu escuadrón.`, "VÍNCULO EXITOSO");
+      showSystemToast(`¡Sincronización Completada! ${data.personaje} (# ${matchedId}) ahora pertenece a tu escuadrón.`, "VÍNCULO EXITOSO");
       setTimeout(() => {
-        aplicarSinergiaAlbum(cleanId, data.personaje);
+        aplicarSinergiaAlbum(matchedId, data.personaje);
       }, 500);
       return true;
     } catch (error) {
@@ -1423,6 +1511,47 @@ export default function App() {
     return <div className="h-screen bg-black flex items-center justify-center font-mono text-cyan-500">CONECTANDO A LA MATRIZ...</div>;
   }
 
+  if (tabSyncedElsewhere) {
+    return (
+      <div className="h-screen bg-black flex flex-col items-center justify-center p-6 text-center font-mono text-cyan-400">
+        <div className="max-w-md p-6 border-2 border-cyan-500 bg-cyan-950/20 rounded shadow-[0_0_30px_rgba(6,182,212,0.35)] relative">
+          <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-cyan-500"></span>
+          <span className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-cyan-500"></span>
+          <span className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-cyan-500"></span>
+          <span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-cyan-500"></span>
+          
+          <div className="w-12 h-12 rounded-full border border-cyan-400 flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <Zap className="text-cyan-400 w-6 h-6" />
+          </div>
+          
+          <h2 className="text-lg font-black tracking-widest text-cyan-300 mb-3 uppercase">¡CONEXIÓN ESTABLECIDA!</h2>
+          <p className="text-xs text-white/80 leading-relaxed mb-6">
+            Hemos detectado que ya tienes otra pestaña de la NeoForja abierta en este navegador. 
+          </p>
+          <p className="text-xs text-cyan-400 bg-cyan-950/40 p-3 rounded border border-cyan-500/20 leading-relaxed font-bold mb-6">
+            El chip de combate se sincronizó automáticamente y sin esperas en tu pantalla principal de batalla.
+          </p>
+          <p className="text-[10px] text-white/50 leading-relaxed font-mono">
+            Puedes cerrar esta pestaña adicional y continuar tu entrenamiento desde tu ventana ya activa.
+          </p>
+          
+          <button 
+            onClick={() => {
+              try {
+                window.close();
+              } catch (e) {
+                alert("Puedes cerrar esta pestaña manualmente.");
+              }
+            }} 
+            className="mt-6 w-full bg-cyan-500 text-black py-2.5 rounded font-black text-xs uppercase hover:bg-cyan-400 transition-all cursor-pointer shadow-[0_0_15px_rgba(6,182,212,0.4)]"
+          >
+            ENTENDIDO Y CERRAR
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col relative z-0">
       {/* Background elements are handled in CSS via body::before */}
@@ -2032,13 +2161,13 @@ export default function App() {
                 Vincular Chip de Combate
               </h3>
               <p className="text-[10px] text-white/50 text-center mb-6">
-                Sincroniza tu ficha física hexagonal a través de sensor NFC o ingresando su código de serie.
+                Sincroniza tu ficha física hexagonal a través del sensor NFC de tu terminal.
               </p>
-
+              
               {/* SECTION 1: NFC READER */}
               <div className="mb-6 p-4 border border-amber-500/20 bg-amber-500/5 rounded">
                 <h4 className="text-xs text-amber-300 font-bold uppercase mb-2 flex items-center gap-1.5">
-                  ⚡ Método 1: Escáner NFC integrado
+                  ⚡ Escáner NFC integrado
                 </h4>
                 <p className="text-[11px] text-white/70 mb-3">
                   Apoya tu ficha hexagonal física de combate en la antena lectora NFC de tu dispositivo.
@@ -2116,38 +2245,6 @@ export default function App() {
                       ))
                     )}
                   </div>
-                </div>
-              </div>
-
-              {/* SECTION 2: MANUAL INPUT */}
-              <div className="p-4 border border-white/10 bg-white/5 rounded">
-                <h4 className="text-xs text-amber-300 font-bold uppercase mb-2">
-                  ✍️ Método 2: Ingreso de Número de Serie (UID)
-                </h4>
-                <p className="text-[11px] text-white/70 mb-3">
-                  Ingresa manualmente la combinación de serie grabada bajo tu ficha.
-                </p>
-                <div className="flex gap-2">
-                  <input 
-                    type="text"
-                    value={manualUid}
-                    onChange={(e) => setManualUid(e.target.value)}
-                    placeholder="Ej. NF-TEST101"
-                    className="flex-grow bg-black border border-white/20 text-white px-2.5 py-1.5 text-xs font-mono rounded focus:outline-none focus:border-amber-500 uppercase"
-                  />
-                  <button 
-                    onClick={() => {
-                      claimPhysicalChip(manualUid).then(success => {
-                        if (success) {
-                          setManualUid("");
-                          setShowClaimModal(false);
-                        }
-                      });
-                    }}
-                    className="bg-amber-500 text-black font-bold text-xs uppercase px-3 py-1.5 rounded hover:bg-amber-400 transition-all cursor-pointer"
-                  >
-                    Sincronizar
-                  </button>
                 </div>
               </div>
 
